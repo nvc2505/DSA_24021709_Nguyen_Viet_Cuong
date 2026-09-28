@@ -11,3 +11,7 @@ for(int i=1; i<=n; i++){
 cout<<tich<<endl;
 return 0;
 }
+/* ĐỘ PHỨC TẠP:
+ - Time Complexity: O(N) vì lặp qua N bước nhân.
+ - Space/Memory Complexity: O(1) .
+*/
