@@ -16,7 +16,12 @@ void SapXepTangDan(vector<int> &a, int n) {
         if (daSapXep) break;
     }
 }
-
+/* ĐỘ PHỨC TẠP (Bubble Sort):
+- Time Complexity:
+  + Tốt nhất: O(N) (khi mảng đã sắp xếp sẵn).
+  + Xấu nhất / Trung bình: O(N^2) (khi mảng đảo ngược hoặc ngẫu nhiên).
+- Space/Memory Complexity: O(1) phụ trợ 
+ */
 int main() {
     int n;
     if (!(cin >> n) || n <= 0) return 0;
