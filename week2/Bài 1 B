@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class StackList {
+private:
+    vector<int> a; // Sử dụng vector để lưu trữ các phần tử của Stack
+
+public:
+    // Kiểm tra Stack có rỗng không - O(1)
+    bool isEmpty() {
+        return a.empty();
+    }
+
+    // Thêm phần tử vào đỉnh Stack (push) - O(1) trung bình
+    void push(int x) {
+        a.push_back(x); // Thêm vào cuối vector (coi cuối vector là đỉnh Stack)
+        cout << "Da push: " << x << endl;
+    }
+
+    // Xóa phần tử ở đỉnh Stack (pop) - O(1)
+    void pop() {
+        if (isEmpty()) {
+            cout << "Stack rong, khong the pop!\n";
+            return;
+        }
+        cout << "Da pop: " << a.back() << endl;
+        a.pop_back(); // Xóa phần tử ở cuối vector
+    }
+
+    // Lấy giá trị phần tử ở đỉnh Stack (top) - O(1)
+    int top() {
+        if (isEmpty()) {
+            cout << "Stack rong!\n";
+            return -1;
+        }
+        return a.back(); // Lấy giá trị phần tử cuối vector
+    }
+};
+
+int main() {
+    cout << "CAI DAT STACK BANG LIST (VECTOR)\n";
+    StackList st;
+
+    st.push(5);
+    st.push(15);
+    st.push(25);
+
+    cout << "Phan tu o dinh Stack: " << st.top() << endl; // Output: 25
+
+    st.pop(); // Xóa 25
+    cout << "Phan tu o dinh Stack sau khi pop: " << st.top() << endl; // Output: 15
+
+    return 0;
+}
