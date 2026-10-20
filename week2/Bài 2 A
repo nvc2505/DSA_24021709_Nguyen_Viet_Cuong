@@ -62,7 +62,7 @@ public:
     }
 };
 int main() {
-    cout << "=== CAI DAT QUEUE BANG LINKED LIST ===\n";
+    cout << "CAI DAT QUEUE BANG LINKED LIST\n";
     QueueLinkedList q;
 
     q.enqueue(10);
