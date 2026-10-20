@@ -1,0 +1,54 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class QueueList {
+private:
+    vector<int> a; // Danh sách / mảng động lưu trữ các phần tử Queue
+public:
+   
+    bool isEmpty() {
+        return a.empty();
+    }
+
+    // Thêm phần tử vào cuối hàng đợi (enqueue) - O(1) trung bình
+    void enqueue(int x) {
+        a.push_back(x); // Thêm phần tử vào cuối vector
+        cout << "Da enqueue: " << x << endl;
+    }
+
+    // Xóa phần tử ở đầu hàng đợi (dequeue) - O(n)
+    void dequeue() {
+        if (isEmpty()) {
+            cout << "Queue rong, khong the dequeue!\n";
+            return;
+        }
+        cout << "Da dequeue: " << a.front() << endl;
+        a.erase(a.begin()); // Xóa phần tử đầu tiên của vector
+    }
+
+    // Xem giá trị phần tử ở đầu hàng đợi (front) - O(1)
+    int front() {
+        if (isEmpty()) {
+            cout << "Queue rong!\n";
+            return -1;
+        }
+        return a.front(); // Lấy giá trị phần tử đầu tiên
+    }
+};
+
+int main() {
+    cout << "CAI DAT QUEUE BANG LIST (VECTOR)\n";
+    QueueList q;
+
+    q.enqueue(10);
+    q.enqueue(20);
+    q.enqueue(30);
+
+    cout << "Phan tu o dau Queue: " << q.front() << endl; // Output: 10
+
+    q.dequeue(); // Xóa 10
+    cout << "Phan tu o dau Queue sau khi dequeue: " << q.front() << endl; // Output: 20
+
+    return 0;
+}
