@@ -1,0 +1,78 @@
+#include <iostream>
+using namespace std;
+// 1. Định nghĩa một Node trong danh sách liên kết
+struct Node {
+    int data;
+    Node* next;
+};
+class QueueLinkedList {
+private:
+    Node* frontNode; // Quản lý đầu hàng đợi (dùng để dequeue)
+    Node* rearNode;  // Quản lý cuối hàng đợi (dùng để enqueue)
+public:
+    // Khởi tạo Queue rỗng
+    QueueLinkedList() {
+        frontNode = NULL;
+        rearNode = NULL;
+    }
+    bool isEmpty() {
+        return frontNode == NULL;
+    }
+    // Thêm phần tử vào cuối hàng đợi (enqueue) - O(1)
+    void enqueue(int x) {
+        Node* newNode = new Node();
+        newNode->data = x;
+        newNode->next = NULL;
+        // Nếu hàng đợi đang rỗng, cả front và rear đều trỏ tới node mới
+        if (isEmpty()) {
+            frontNode = newNode;
+            rearNode = newNode;
+        } else {
+            // Gắn node mới vào sau rear hiện tại, sau đó cập nhật lại rearNode
+            rearNode->next = newNode;
+            rearNode = newNode;
+        }
+        cout << "Da enqueue: " << x << endl;
+    }
+    // Xóa phần tử ở đầu hàng đợi (dequeue) - O(1)
+    void dequeue() {
+        if (isEmpty()) {
+            cout << "Queue rong, khong thể dequeue!\n";
+            return;
+        }
+        Node* temp = frontNode;          // Lưu tạm node ở đầu
+        cout << "Da dequeue: " << temp->data << endl;
+        
+        frontNode = frontNode->next;     // Dịch front sang node tiếp theo
+
+        // Nếu sau khi xóa mà hàng đợi hết phần tử, phải cập nhật lại rearNode = NULL
+        if (frontNode == NULL) {
+            rearNode = NULL;
+        }
+
+        delete temp;                     // Giải phóng bộ nhớ
+    }
+    // Xem giá trị phần tử ở đầu hàng đợi (front) - O(1)
+    int front() {
+        if (isEmpty()) {
+            cout << "Queue rong!\n";
+            return -1;
+        }
+        return frontNode->data;
+    }
+};
+int main() {
+    cout << "=== CAI DAT QUEUE BANG LINKED LIST ===\n";
+    QueueLinkedList q;
+
+    q.enqueue(10);
+    q.enqueue(20);
+    q.enqueue(30);
+
+    cout << "Phan tu o dau Queue: " << q.front() << endl; // Output: 10
+
+    q.dequeue(); // Xóa 10
+    cout << "Phan tu o dau Queue sau khi dequeue: " << q.front() << endl; // Output: 20
+
+    return 0;
+}
