@@ -1,0 +1,123 @@
+#include <iostream>
+
+using namespace std;
+
+// Kích thước cố định của bảng băm
+const int TABLE_SIZE = 10;
+
+// Cấu trúc một Nút (Node) trong danh sách liên kết
+class Node {
+public:
+    int key;
+    int value;
+    Node* next; // Con trỏ trỏ đến Node tiếp theo trong danh sách liên kết (dùng để giải quyết xung đột)
+
+    // Constructor khởi tạo Node
+    Node(int k, int v) {
+        key = k;
+        value = v;
+        next = nullptr;
+    }
+};
+
+// Cấu trúc Bảng băm sử dụng phương pháp Chuỗi tách biệt (Separate Chaining)
+class SeparateChainingHashTable {
+private:
+    Node* table[TABLE_SIZE]; // Mảng chứa các con trỏ, mỗi phần tử là đầu của một Linked List
+
+public:
+    // Constructor: Khởi tạo bảng băm với tất cả các ô ban đầu đều trống (nullptr)
+    SeparateChainingHashTable() {
+        for (int i = 0; i < TABLE_SIZE; i++) {
+            table[i] = nullptr;
+        }
+    }
+
+    // Destructor: Giải phóng toàn bộ bộ nhớ được cấp phát động để tránh rò rỉ bộ nhớ (Memory Leak)
+    ~SeparateChainingHashTable() {
+        for (int i = 0; i < TABLE_SIZE; i++) {
+            Node* current = table[i];
+            while (current != nullptr) {
+                Node* temp = current;
+                current = current->next;
+                delete temp; // Xóa từng node trong danh sách liên kết
+            }
+        }
+    }
+
+    // Hàm băm (Hash Function): Xác định chỉ số của bảng dựa vào key
+    int hashFunction(int key) {
+        return key % TABLE_SIZE;
+    }
+
+    // Thêm phần tử hoặc cập nhật giá trị nếu key đã tồn tại
+    void push(int key, int value) {
+        int index = hashFunction(key);
+        Node* cur = table[index];
+
+        // Bước 1: Kiểm tra xem key đã tồn tại trong danh sách liên kết tại ô này chưa
+        while (cur != nullptr) {
+            if (cur->key == key) {
+                cur->value = value; // Nếu có rồi thì cập nhật giá trị mới và kết thúc
+                return;
+            }
+            cur = cur->next;
+        }
+
+        // Bước 2: Nếu key chưa tồn tại, tạo Node mới và chèn vào đầu danh sách liên kết (O(1))
+        Node* newNode = new Node(key, value);
+        newNode->next = table[index];
+        table[index] = newNode;
+    }
+
+    // Tìm và trả về giá trị (value) dựa vào key
+    int get(int key) {
+        int index = hashFunction(key);
+        Node* cur = table[index];
+
+        // Duyệt qua danh sách liên kết tại ô `index` để tìm key khớp
+        while (cur != nullptr) {
+            if (cur->key == key) {
+                return cur->value; // Tìm thấy, trả về giá trị
+            }
+            cur = cur->next;
+        }
+
+        // Không tìm thấy key trong bảng
+        cout << "Thong bao: Khong tim thay key " << key << " trong bang.\n";
+        return -1;
+    }
+
+    // Kiểm tra xem một key có tồn tại trong bảng băm hay không
+    bool contain(int key) {
+        int index = hashFunction(key);
+        Node* cur = table[index];
+
+        // Duyệt qua danh sách liên kết
+        while (cur != nullptr) {
+            if (cur->key == key) {
+                return true; // Tìm thấy
+            }
+            cur = cur->next;
+        }
+
+        return false; // Duyệt hết danh sách mà không thấy
+    }
+};
+
+int main() {
+    SeparateChainingHashTable ht;
+
+    // Thêm các phần tử (Các số 15, 25, 35 đều có chung hash index = 5, sẽ tạo thành danh sách liên kết tại ô số 5)
+    ht.push(15, 100);
+    ht.push(25, 200);
+    ht.push(35, 300);
+    ht.push(7, 400);  // Hash index = 7
+
+    // Kiểm tra kết quả
+    cout << "Gia tri cua key 25 la: " << ht.get(25) << endl;         // Output: 200
+    cout << "Key 35 co ton tai khong? (1: Co, 0: Khong): " << ht.contain(35) << endl;   // Output: 1
+    cout << "Key 99 co ton tai khong? (1: Co, 0: Khong): " << ht.contain(99) << endl;   // Output: 0
+
+    return 0;
+}
