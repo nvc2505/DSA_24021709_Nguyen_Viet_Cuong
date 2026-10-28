@@ -1,0 +1,135 @@
+#include <iostream>
+
+using namespace std;
+
+// Kích thước cố định của bảng băm
+const int TABLE_SIZE = 10;
+
+// Cấu trúc đại diện cho một nút (Node) chứa cặp khóa - giá trị (Key - Value)
+class Node {
+public:
+    int key;
+    int value;
+
+    // Constructor khởi tạo Node
+    Node(int k, int v) {
+        key = k;
+        value = v;
+    }
+};
+
+// Cấu trúc Bảng băm sử dụng phương pháp Địa chỉ mở (Open Addressing - Dò tuyến tính / Linear Probing)
+class OpenAddressingHashTable {
+private:
+    Node* table[TABLE_SIZE];
+
+public:
+    // Constructor: Khởi tạo bảng băm với tất cả các ô ban đầu đều trống (nullptr)
+    OpenAddressingHashTable() {
+        for (int i = 0; i < TABLE_SIZE; i++) {
+            table[i] = nullptr;
+        }
+    }
+
+    // Destructor: Giải phóng bộ nhớ đã cấp phát động để tránh rò rỉ bộ nhớ (Memory Leak)
+    ~OpenAddressingHashTable() {
+        for (int i = 0; i < TABLE_SIZE; i++) {
+            if (table[i] != nullptr) {
+                delete table[i];
+            }
+        }
+    }
+
+    // Hàm băm (Hash Function): Xác định vị trí ban đầu dựa trên key
+    int hashFunction(int key) {
+        return key % TABLE_SIZE;
+    }
+
+    // Thêm hoặc cập nhật phần tử vào bảng băm
+    void push(int key, int value) {
+        int index = hashFunction(key);
+        int count = 0;
+
+        // Dò tuyến tính (Linear Probing): Duyệt tìm ô trống hoặc ô chứa sẵn key này
+        while (table[index] != nullptr && count < TABLE_SIZE) {
+            // Nếu key đã tồn tại trong bảng, tiến hành cập nhật giá trị mới và kết thúc
+            if (table[index]->key == key) {
+                table[index]->value = value;
+                return;
+            }
+            // Nếu ô bị chiếm, dịch chuyển sang ô kế tiếp (dùng phép toán modulo để quay vòng)
+            index = (index + 1) % TABLE_SIZE;
+            count++;
+        }
+
+        // Nếu đã duyệt qua toàn bộ bảng mà không còn chỗ trống
+        if (count == TABLE_SIZE) {
+            cout << "Loi: Bang bam da day (Hash table is full)!\n";
+            return;
+        }
+
+        // Tìm được ô trống hợp lệ, cấp phát và chèn phần tử mới vào
+        table[index] = new Node(key, value);
+    }
+
+    // Tìm và trả về giá trị (value) dựa vào key
+    int get(int key) {
+        int index = hashFunction(key);
+
+        // Duyệt tối đa bằng kích thước bảng băm để tìm kiếm
+        for (int count = 0; count < TABLE_SIZE; count++) {
+            int i = (index + count) % TABLE_SIZE;
+
+            // Nếu gặp ô trống, nghĩa là key không tồn tại trong bảng băm
+            if (table[i] == nullptr) {
+                cout << "Thong bao: Khong tim thay key " << key << " trong bang.\n";
+                return -1;
+            }
+
+            // Nếu tìm thấy key trùng khớp, trả về giá trị tương ứng
+            if (table[i]->key == key) {
+                return table[i]->value;
+            }
+        }
+
+        cout << "Thong bao: Khong tim thay key " << key << " trong bang.\n";
+        return -1;
+    }
+
+    // Kiểm tra xem một key có tồn tại trong bảng băm hay không
+    bool contain(int key) {
+        int index = hashFunction(key);
+
+        for (int count = 0; count < TABLE_SIZE; count++) {
+            int i = (index + count) % TABLE_SIZE;
+
+            // Gặp ô trống -> key chắc chắn không có trong bảng
+            if (table[i] == nullptr) {
+                return false;
+            }
+
+            // Tìm thấy key trùng khớp
+            if (table[i]->key == key) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+};
+
+int main() {
+    OpenAddressingHashTable ht;
+
+    // Thêm các phần tử
+    ht.push(12, 100); // hash = 12 % 10 = 2
+    ht.push(22, 200); // hash = 22 % 10 = 2 (xảy ra xung đột, dịch sang vị trí 3)
+    ht.push(32, 300); // hash = 32 % 10 = 2 (xảy ra xung đột, dịch tiếp sang vị trí 4)
+
+    // Kiểm tra kết quả
+    cout << "Gia tri cua key 22 la: " << ht.get(22) << endl;         // Output: 200
+    cout << "Key 32 co ton tai khong? (1: Co, 0: Khong): " << ht.contain(32) << endl;   // Output: 1
+    cout << "Key 42 co ton tai khong? (1: Co, 0: Khong): " << ht.contain(42) << endl;   // Output: 0
+
+    return 0;
+}
