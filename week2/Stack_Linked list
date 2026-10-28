@@ -1,0 +1,70 @@
+#include <iostream>
+using namespace std;
+
+// Định nghĩa cấu trúc một Node trong danh sách liên kết
+struct Node {
+    int data;
+    Node* next;
+};
+
+class StackLinkedList {
+private:
+    Node* topNode; // Con trỏ quản lý đỉnh Stack
+
+public:
+    // Khởi tạo Stack rỗng
+    StackLinkedList() {
+        topNode = NULL;
+    }
+
+    // Kiểm tra Stack có rỗng không
+    bool isEmpty() {
+        return topNode == NULL;
+    }
+
+    // Thêm phần tử vào đỉnh Stack (push) - O(1)
+    void push(int x) {
+        Node* newNode = new Node();
+        newNode->data = x;
+        newNode->next = topNode;
+        topNode = newNode;
+        cout << "Da push: " << x << endl;
+    }
+
+    // Xóa phần tử ở đỉnh Stack (pop) - O(1)
+    void pop() {
+        if (isEmpty()) {
+            cout << "Stack rong, khong thể pop!\n";
+            return;
+        }
+        Node* temp = topNode;
+        topNode = topNode->next;
+        cout << "Da pop: " << temp->data << endl;
+        delete temp;
+    }
+
+    // Lấy giá trị phần tử ở đỉnh Stack (top) - O(1)
+    int top() {
+        if (isEmpty()) {
+            cout << "Stack rong!\n";
+            return -1;
+        }
+        return topNode->data;
+    }
+};
+
+int main() {
+    cout << " CAI DAT STACK BANG LINKED LIST \n";
+    StackLinkedList st;
+
+    st.push(10);
+    st.push(20);
+    st.push(30);
+
+    cout << "Phan tu o dinh Stack: " << st.top() << endl; //cout 30
+
+    st.pop(); // Xóa 30
+    cout << "Phan tu o dinh Stack sau khi pop: " << st.top() << endl; // Output: 20
+
+    return 0;
+}
